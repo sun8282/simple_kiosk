@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import sample.cafekiosk.unit.CafeKiosk;
 import sample.cafekiosk.unit.beverage.Americano;
+import sample.cafekiosk.unit.beverage.Latte;
 import sample.cafekiosk.unit.order.Order;
 
 import static org.assertj.core.api.Assertions.*;
@@ -18,6 +19,22 @@ public class CafeKioskTest {
         System.out.println(">>> 담긴 음료 수 : " + cafeKiosk.getBeverages().size());
         System.out.println(">>> 담긴 음료 : " + cafeKiosk.getBeverages().get(0).getName());
     }
+
+    @Test
+    void calculateTotalPrice(){
+        CafeKiosk cafeKiosk = new CafeKiosk();
+        Americano americano = new Americano();
+        Latte latte = new Latte();
+
+        cafeKiosk.add(latte);
+        cafeKiosk.add(americano);
+
+        int totalPrice = cafeKiosk.calculateTotalPrice();
+
+        assertThat(totalPrice).isEqualTo(8500);
+    }
+
+
 
     @Test
     void createOrder(){
