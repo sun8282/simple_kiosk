@@ -1,6 +1,7 @@
 package sample.cafekiosk;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import sample.cafekiosk.unit.CafeKiosk;
 import sample.cafekiosk.unit.beverage.Americano;
@@ -11,6 +12,7 @@ import static org.assertj.core.api.Assertions.*;
 
 public class CafeKioskTest {
 
+    @DisplayName("음료 1개 추가 테스트")
     @Test
     void add(){
         CafeKiosk cafeKiosk = new CafeKiosk();
