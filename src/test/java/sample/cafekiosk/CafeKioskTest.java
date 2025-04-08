@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.*;
 
 public class CafeKioskTest {
 
-    @DisplayName("음료 1개 추가 테스트")
+    @DisplayName("음료 1개를 추가하면 주문 목록에 담긴다.")
     @Test
     void add(){
         CafeKiosk cafeKiosk = new CafeKiosk();
