@@ -2,6 +2,7 @@ package sample.cafekiosk.spring.domain.product;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,4 +27,12 @@ public class Product {
 
     private int price;
 
+    @Builder
+    private Product(String productNumber, ProductType type, ProductSellingStatus sellingType, String name, int price) {
+        this.productNumber = productNumber;
+        this.type = type;
+        this.sellingType = sellingType;
+        this.name = name;
+        this.price = price;
+    }
 }
