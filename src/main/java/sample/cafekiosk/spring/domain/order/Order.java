@@ -8,6 +8,7 @@ import sample.cafekiosk.spring.domain.BaseEntity;
 import sample.cafekiosk.spring.domain.orderproduct.OrderProduct;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -28,5 +29,5 @@ public class Order extends BaseEntity {
     private LocalDateTime registeredDateTime;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderProduct> orderProducts;
+    private List<OrderProduct> orderProducts = new ArrayList<>();
 }
