@@ -1,14 +1,18 @@
 package sample.cafekiosk.spring.domain.order;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import sample.cafekiosk.spring.domain.BaseEntity;
+import sample.cafekiosk.spring.domain.orderproduct.OrderProduct;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "orders")
 @Entity
 public class Order extends BaseEntity {
 
@@ -23,4 +27,6 @@ public class Order extends BaseEntity {
 
     private LocalDateTime registeredDateTime;
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderProduct> orderProducts;
 }
