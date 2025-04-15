@@ -14,6 +14,7 @@ import sample.cafekiosk.spring.domain.product.Product;
 import sample.cafekiosk.spring.domain.product.ProductRepository;
 import sample.cafekiosk.spring.domain.product.ProductSellingStatus;
 import sample.cafekiosk.spring.domain.product.ProductType;
+import sample.cafekiosk.spring.domain.stock.Stock;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -83,6 +84,9 @@ class OrderServiceTest {
         Product product3 = createProduct(ProductType.HANDMADE, "003", 5000);
 
         productRepository.saveAll(List.of(product1, product2, product3));
+
+        Stock stock1 = Stock.create("001", 2);
+        Stock stock2 = Stock.create("002", 2);
 
         OrderCreateRequest request = OrderCreateRequest.builder()
                 .productNumbers(List.of("001", "001", "002", "003")).build();
