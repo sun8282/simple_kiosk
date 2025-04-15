@@ -15,6 +15,7 @@ import sample.cafekiosk.spring.domain.product.ProductRepository;
 import sample.cafekiosk.spring.domain.product.ProductSellingStatus;
 import sample.cafekiosk.spring.domain.product.ProductType;
 import sample.cafekiosk.spring.domain.stock.Stock;
+import sample.cafekiosk.spring.domain.stock.StockRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,6 +28,9 @@ class OrderServiceTest {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private StockRepository stockRepository;
 
     @Autowired
     private ProductRepository productRepository;
@@ -42,6 +46,7 @@ class OrderServiceTest {
         orderProductRepository.deleteAllInBatch();
         productRepository.deleteAllInBatch();
         orderRepository.deleteAllInBatch();
+        stockRepository.deleteAllInBatch();
     }
 
     @DisplayName("주문번호 리스트를 받아 주문을 생성한다.")
@@ -87,6 +92,7 @@ class OrderServiceTest {
 
         Stock stock1 = Stock.create("001", 2);
         Stock stock2 = Stock.create("002", 2);
+        stockRepository.saveAll(List.of(stock1, stock2));
 
         OrderCreateRequest request = OrderCreateRequest.builder()
                 .productNumbers(List.of("001", "001", "002", "003")).build();
@@ -96,12 +102,22 @@ class OrderServiceTest {
         assertThat(orderResponse.getId()).isNotNull();
         assertThat(orderResponse)
                 .extracting("registeredDateTime", "totalPrice")
-                .contains(LocalDateTime.now(), 4000);
-        assertThat(orderResponse.getProducts()).hasSize(2)
+                .contains(LocalDateTime.now(), 10000);
+        assertThat(orderResponse.getProducts()).hasSize(4)
                 .extracting("productNumber", "price")
                 .containsExactlyInAnyOrder(
                         tuple("001", 1000),
-                        tuple("002", 3000)
+                        tuple("001", 1000),
+                        tuple("002", 3000),
+                        tuple("003", 5000)
+                );
+
+        List<Stock> stocks = stockRepository.findAll();
+        assertThat(stocks).hasSize(2)
+                .extracting("productNumber", "quantity")
+                .containsExactlyInAnyOrder(
+                        tuple("001", 0),
+                        tuple("002", 1)
                 );
     }
 
