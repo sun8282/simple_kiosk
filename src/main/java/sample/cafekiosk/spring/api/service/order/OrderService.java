@@ -30,6 +30,7 @@ public class OrderService {
         // 재고 차감 체크가 필요한 상품들 filter
         products.stream()
                 .filter(product -> ProductType.containsStockType(product.getType()))
+                .collect(Collectors.toList());
         // 재고 엔티티 조회
         // 상품별 counting
         // 재고 차감 시도
