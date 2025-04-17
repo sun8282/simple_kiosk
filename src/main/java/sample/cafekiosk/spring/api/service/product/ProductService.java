@@ -18,8 +18,9 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     public void createProduct(ProductCreateRequest request) {
-        // productNumber
-        //
+
+        String latesProductNumber = productRepository.findLatesProduct();
+
     }
 
     public List<ProductResponse> getSellingProducts() {
