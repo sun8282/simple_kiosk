@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import sample.cafekiosk.spring.api.contoller.product.dto.request.ProductCreateRequest;
 import sample.cafekiosk.spring.api.service.product.ProductService;
@@ -42,6 +43,7 @@ class ProductControllerTest {
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
         )
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
     }
