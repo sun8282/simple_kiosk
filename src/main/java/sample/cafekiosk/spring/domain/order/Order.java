@@ -2,17 +2,16 @@ package sample.cafekiosk.spring.domain.order;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import sample.cafekiosk.spring.domain.BaseEntity;
 import sample.cafekiosk.spring.domain.orderproduct.OrderProduct;
 import sample.cafekiosk.spring.domain.product.Product;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Getter
@@ -25,6 +24,16 @@ public class Order extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Builder
+    private Order(List<Product> products, OrderStatus orderStatus, LocalDateTime registeredDateTime) {
+        this.orderStatus = orderStatus;
+        this.totalPrice = calculateTotalPrice(products);
+        this.registeredDateTime = registeredDateTime;
+        this.orderProducts = products.stream()
+                .map(product -> new OrderProduct(this, product))
+                .collect(Collectors.toList());
+    }
+
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
@@ -35,14 +44,6 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderProduct> orderProducts = new ArrayList<>();
 
-    public Order(List<Product> products, LocalDateTime registeredDateTime){
-        this.orderStatus = OrderStatus.INIT;
-        this.totalPrice = calculateTotalPrice(products);
-        this.registeredDateTime = registeredDateTime;
-        this.orderProducts = products.stream()
-                .map(product -> new OrderProduct(this, product))
-                .collect(Collectors.toList());
-    }
 
     private static int calculateTotalPrice(List<Product> products) {
         return products.stream()
@@ -51,6 +52,10 @@ public class Order extends BaseEntity {
     }
 
     public static Order create(List<Product> products, LocalDateTime registeredDateTime) {
-        return new Order(products, registeredDateTime);
+        return Order.builder()
+                .orderStatus(OrderStatus.INIT)
+                .products(products)
+                .registeredDateTime(registeredDateTime)
+                .build();
     }
 }
