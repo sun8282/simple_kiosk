@@ -5,11 +5,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import sample.cafekiosk.spring.client.mail.MailSendClient;
 import sample.cafekiosk.spring.domain.history.mail.MailSendHistory;
 import sample.cafekiosk.spring.domain.history.mail.MailSendHistoryRepository;
 import sample.cafekiosk.spring.domain.order.Order;
 import sample.cafekiosk.spring.domain.order.OrderRepository;
 import sample.cafekiosk.spring.domain.order.OrderStatus;
+import sample.cafekiosk.spring.domain.orderproduct.OrderProductRepository;
 import sample.cafekiosk.spring.domain.product.Product;
 import sample.cafekiosk.spring.domain.product.ProductRepository;
 import sample.cafekiosk.spring.domain.product.ProductSellingStatus;
@@ -20,6 +23,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class OrderStatisticsServiceTest {
@@ -36,10 +41,18 @@ class OrderStatisticsServiceTest {
     @Autowired
     private MailSendHistoryRepository mailSendHistoryRepository;
 
+    @Autowired
+    private OrderProductRepository orderProductRepository;
+
+    @MockitoBean
+    private MailSendClient mailSendClient;
+
     @AfterEach
     void tearDown(){
+        orderProductRepository.deleteAllInBatch();
         orderRepository.deleteAllInBatch();
         productRepository.deleteAllInBatch();
+        mailSendHistoryRepository.deleteAllInBatch();
     }
     
     @Test
@@ -57,6 +70,10 @@ class OrderStatisticsServiceTest {
         Order order1 = createPaymentCompletedOrder(products, now);
         Order order2 = createPaymentCompletedOrder(products, now);
         Order order3 = createPaymentCompletedOrder(products, now);
+        Order order4 = createPaymentCompletedOrder(products, now);
+
+        when(mailSendClient.sendEmail(any(String.class), any(String.class), any(String.class), any(String.class)))
+                .thenReturn(true);
 
         // when
         boolean result = orderStatisticsService.sendOrderStatisticsMail(LocalDate.of(2023, 3, 5), "test@test.com");
@@ -67,7 +84,7 @@ class OrderStatisticsServiceTest {
         List<MailSendHistory> histories = mailSendHistoryRepository.findAll();
         assertThat(histories).hasSize(1)
                 .extracting("content")
-                .contains("총 매출 합계는 18000원입니다.");
+                .contains("총 매출 합계는 12000원입니다.");
     }
 
     private Order createPaymentCompletedOrder(List<Product> products, LocalDateTime now) {
