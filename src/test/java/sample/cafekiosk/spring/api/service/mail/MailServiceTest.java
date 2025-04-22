@@ -4,11 +4,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import sample.cafekiosk.spring.client.mail.MailSendClient;
+import sample.cafekiosk.spring.domain.history.mail.MailSendHistory;
 import sample.cafekiosk.spring.domain.history.mail.MailSendHistoryRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class MailServiceTest {
     @Test
@@ -28,5 +29,6 @@ class MailServiceTest {
 
         // then
         assertThat(result).isTrue();
+        verify(mailSendHistoryRepository, times(1)).save(any(MailSendHistory.class));
     }
 }
