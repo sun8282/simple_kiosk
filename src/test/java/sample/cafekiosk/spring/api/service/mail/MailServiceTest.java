@@ -64,4 +64,23 @@ class MailServiceTest {
         assertThat(result).isTrue();
         verify(mailSendHistoryRepository, times(1)).save(any(MailSendHistory.class));
     }
+
+    @Test
+    @DisplayName("메일 전송 테스트")
+    void sendMail3() {
+        // given
+        when(mailSendClient.sendEmail(any(String.class), any(String.class), any(String.class), any(String.class)))
+                .thenReturn(true);
+
+        doReturn(true)
+                .when(mailSendClient)
+                .sendEmail(anyString(), anyString(), anyString(), anyString());
+        // when
+        boolean result = mailService.sendMail("", "", "", "");
+
+        // then
+        assertThat(result).isTrue();
+        verify(mailSendHistoryRepository, times(1)).save(any(MailSendHistory.class));
+    }
+
 }
